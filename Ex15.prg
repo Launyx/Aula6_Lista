@@ -1,69 +1,52 @@
 // REQUEST HB_GT_WIN_DEFAULT
 function main()
 
-    local nI, nCont
-    local bDigito
-    local tudodigito
     local nNum
-    local aNum := {}
-    local bLoop := .T.
 
-    while bLoop
-        ACCEPT "Digite um número para saber seu módulo: " TO nNum
+    ACCEPT "Digite um número para saber se ele é positivo: " TO nNum
 
-        for nI := 1 TO len(nNum)
-            AAdd(aNum, SubStr(nNum, nI, 1)) //Adiciona caractere por caractere do número a uma string
-        next nI
+    if ehpositivo(nNum)
+        QOUT(nNum + " é um número positivo, portanto seu módulo é " + nNum)
+    else
+        nNum := (Val(nNUm)) * (-1)  // Só calcula módulo se a função ehpositivo retornar falso
+        QOUT("-" + Alltrim(Str(nNum)) + " é um número negativo, portanto seu módulo é " + Alltrim(Str(nNum)))
+    end if
 
-        if isdigit(aNum[1]) .OR. aNum[1] == "-"
-            for nCont := 2 TO len(aNum)
-                tudodigito := isdigit(aNum[nCont])
-                if tudodigito == .F.
-                    bDigito := .F.
-                else
-                    bDigito := .T.
-                end if
-            next nCont
-
-        // elseif aNum[1] == "-"
-        //     for nCont := 2 TO len(aNum)
-        //         tudodigito := isdigit(aNum[nCont])
-        //         if tudodigito == .F.
-        //             bDigito := .F.
-        //         else
-        //             bDigito := .T.
-        //         end if
-        //     next nCont
-        else
-            QOUT("Valor inválido")
-            bDigito := .F.
-        end if
-
-        if bDigito == .T.
-            if ehpositivo(nNum)
-                QOUT("Você digitou um número positivo. O módulo de |" + nNUm + "| é " +  nNum)
-
-            else
-                nNum := Val(nNum) * (-1)
-                QOUT("Você digitou um número negativo. O módulo de |-" + Alltrim(Str(nNUm)) + "| é " +  Alltrim(Str(nNum)))
-            end if
-        else
-            QOUT("Valor inválido!")
-        end if
-
-    end do
+    wait
 
 RETURN nil
 
-
 static function ehpositivo(valor)
 
-    local bPos
-    
-    if Val(valor) >= 0
-        bPos := .T.
-    else
+    local bPos, nCont, nI, falso, cont
+    local contador := 0
+    local aNumero := {}
+    local aLogicos := {}
+
+    for nI := 1 TO len(valor)   // Laço para adicionar caractere por caracter a uma Array
+        AAdd(aNumero, SubStr(valor, nI, 1))
+    next nI
+
+    for cont := 1 TO len(valor) // Laço para adicionar a verificação de cada caractere, se este é um dígito ou não
+        AAdd(aLogicos, isdigit(aNumero[cont]))
+
+    next cont
+
+    for nCont := 2 TO len(aLogicos) // Laço para verificar se há caracteres não digitos entre os digitos
+        falso := aLogicos[nCont]    
+        if falso == .F.             // Se um dos caracteres não for digito ele soma ao contador
+            contador ++
+        end if
+    next nCont
+
+    if aNumero[1] == "-" .AND. contador == 0    // se o primeiro caractere digitado é '-' e não há outro caractere que não seja digito, o número é negativo
         bPos := .F.
+    elseif isdigit(aNumero[1]) .AND. contador == 0  // Se o primeiro caractere é um digito e não há outro caractere que não seja digito, o número é positivo
+        bPos := .T.
+        
+    else   // Se nenhuma das condições acima for aceita, o valor digitado possui caractere inválido
+        QOUT("Valor inválido!")
+        break
     end if
 
 RETURN bPos
