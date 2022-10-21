@@ -24,7 +24,7 @@ function main()
 
         else
             QOUT("Valor inválido, digite um número!")
-            bLoop := .T.
+            loop
 
         end if
     end do
@@ -37,7 +37,7 @@ RETURN nil
 static function POT(valor1, valor2)
 
     local res
-    res := valor1 ** valor2
+    res := valor1 ** valor2 // Calcula potência
 
 
 RETURN res
